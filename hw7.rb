@@ -1,7 +1,7 @@
 # John Pease, CS431, Homework 7
 class MyVector
 
-  @array
+  @array = Array.new
 
   def initialize(array)
     @array=array
@@ -17,32 +17,42 @@ class MyVector
       if @array.length != a.length
         raise ArgumentError, 'Vector is incorrect size'
       end
+
       r = 0
-      @array.zip(a).each do |x,y|
-        r += x*y
+      for i in 0..@array.length-1 do
+        r += @array[i] * a.get_index(i)
       end
+      return r
+
     elsif a.instance_of?(MyMatrix)
 
-      if (a.length != @array.length)
+      if a.length != @array.length
         raise ArgumentError, 'Matrix has incorrect number of rows'
       end
 
-      len = a[0].length
-      a.each do |x|
-        if (x.length != len)
+      len = a.get_index(0).length
+      a.get_matrix.each do |x|
+        if x.length != len
           raise ArgumentError, 'Matrix argument has inconsistent columns'
         end
         len = x.length
       end
 
+      r = Array.new
       @array.each do |i|
-        res << 0
+        r << 0
       end
+      #a is a matrix
       arrayCount = 0
       aCount = 0
+
       @array.each do |i|
-        a[arrayCount].foreach do |z|
-          res[aCount] += i * a[arrayCount][aCount]
+        a.get_index(arrayCount).get_vector.each do |z|
+          #r[aCount] += i * a[arrayCount][aCount]
+          puts '**** a[arrayCount][aCount]: ' + a.get_index(arrayCount).get_index(aCount).to_s
+          puts 'r[aCount]: ' + r[aCount].to_s
+          puts 'i: ' + i.to_s + ', aCount: ' + aCount.to_s + ', arrayCount: ' + arrayCount.to_s
+          r[aCount] += i * a.get_index(arrayCount).get_index(aCount)
           aCount+=1
         end
         arrayCount+=1
@@ -59,7 +69,15 @@ class MyVector
     @array.each do |e|
       x = x.concat(e.to_s).concat(' ')
     end
-    return x
+    x
+  end
+
+  def get_index(i)
+    @array[i]
+  end
+
+  def get_vector
+    @array
   end
 
 end
@@ -72,10 +90,9 @@ class MyMatrix
   #[MyVector, MyVector, MyVector] and
   #stores it in matrix
   def initialize(a)
-    @matrix = Array.new(a.length)
+    @matrix = Array.new
     a.each do |i|
-      puts i.to_s
-      # @matrix << MyVector.new(i)
+      @matrix << MyVector.new(i)
     end
   end
 
@@ -100,14 +117,40 @@ class MyMatrix
   def to_s
     x = ''
     @matrix.each do |e|
+      x << "\n"
       x=x.concat(e.to_s)
     end
-    return x
+    x
+  end
+
+  def length
+    @matrix.length
+  end
+
+  def get_index(i)
+    @matrix[i]
+  end
+
+  def get_matrix
+    @matrix
   end
 end
 
+# Vector tests
 v = MyVector.new([1,2,3])
-puts v.to_s
+puts 'v = ' + v.to_s
 
-m = MyMatrix.new([[1,2],[3,4],[5,6]])
-puts m.to_s
+v1 = MyVector.new([2,3,4])
+#puts 'v1 = ' + v1.to_s
+#puts 'v * v1 = ' + (v * v1).to_s
+#puts (v * v1).class
+
+m = MyMatrix.new([[1,2],[1,2],[1,2]])
+puts 'm =  ' + m.to_s
+#puts 'v * m = ' + (v * m).to_s
+(v * m)
+
+m1 = MyMatrix.new([[1,2,3], [2,3,4]])
+#puts 'm1 = ' + m1.to_s + '\n'
+#puts 'm * m1 = ' + (m * m1).to_s
+#puts 'm1 * m = ' + (m1 * m).to_s
