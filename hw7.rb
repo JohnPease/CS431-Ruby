@@ -1,7 +1,5 @@
-# John Pease, CS431, Homework 7
+# John Pease, CS431, Ruby Homework 7
 class MyVector
-
-  @array = Array.new
 
   def initialize(array)
     @array=array
@@ -13,7 +11,7 @@ class MyVector
 
   def *(a)
     if a.instance_of?(MyVector)
-      #return inner product of vector and a
+
       if @array.length != a.length
         raise ArgumentError, 'Vector is incorrect size'
       end
@@ -22,7 +20,7 @@ class MyVector
       for i in 0..@array.length-1 do
         r += @array[i] * a.get_index(i)
       end
-      return r
+      r
 
     elsif a.instance_of?(MyMatrix)
 
@@ -38,27 +36,14 @@ class MyVector
         len = x.length
       end
 
-      r = Array.new
-      @array.each do |i|
-        r << 0
-      end
-      #a is a matrix
-      arrayCount = 0
-      aCount = 0
-
-      @array.each do |i|
-        a.get_index(arrayCount).get_vector.each do |z|
-          #r[aCount] += i * a[arrayCount][aCount]
-          puts '**** a[arrayCount][aCount]: ' + a.get_index(arrayCount).get_index(aCount).to_s
-          puts 'r[aCount]: ' + r[aCount].to_s
-          puts 'i: ' + i.to_s + ', aCount: ' + aCount.to_s + ', arrayCount: ' + arrayCount.to_s
-          r[aCount] += i * a.get_index(arrayCount).get_index(aCount)
-          aCount+=1
+      r = Array.new(len, 0)
+      for i in 0..len-1 do
+        for j in 0..@array.length-1 do
+          r[i] += @array[j] * a.get_matrix[j].get_index(i)
         end
-        arrayCount+=1
       end
-      res
 
+      return MyVector.new(r)
     else
       raise ArgumentError, 'Wrong type for MyVector *'
     end
@@ -85,10 +70,6 @@ end
 
 class MyMatrix
 
-  @matrix = Array.new
-  #Takes [[],[],[]], converts into
-  #[MyVector, MyVector, MyVector] and
-  #stores it in matrix
   def initialize(a)
     @matrix = Array.new
     a.each do |i|
@@ -97,21 +78,34 @@ class MyMatrix
   end
 
   def transpose
-    # ????
+    tMatrix = Array.new(0)
+    for i in 0..@matrix[0].length-1 do
+      tArray = Array.new(0)
+      for j in 0..@matrix.length-1 do
+        tArray << @matrix[j].get_vector[i]
+      end
+      tMatrix << MyVector.new(tArray)
+    end
+
+    @matrix = tMatrix
   end
 
   def *(a)
-    # valid = # cols here == # rows in a
-    if !(@matrix[0].length == a.length)
-      return
+    if @matrix[0].length != a.length
+      raise ArgumentError, 'Incorrect sized matrices sent to *'
     end
+    mat = Array.new(0)
+    a.transpose
     # multiply matrices
     @matrix.each do |i|
-      aFixed.each do |j|
+      res = Array.new(0)
+      a.get_matrix.each do |j|
         res << i*j
       end
+      mat << res
     end
-    @matrix = res
+    a.transpose
+    return MyMatrix.new(mat)
   end
 
   def to_s
@@ -141,16 +135,14 @@ v = MyVector.new([1,2,3])
 puts 'v = ' + v.to_s
 
 v1 = MyVector.new([2,3,4])
-#puts 'v1 = ' + v1.to_s
-#puts 'v * v1 = ' + (v * v1).to_s
-#puts (v * v1).class
+puts 'v1 = ' + v1.to_s
+puts 'v * v1 = ' + (v * v1).to_s
 
 m = MyMatrix.new([[1,2],[1,2],[1,2]])
 puts 'm =  ' + m.to_s
-#puts 'v * m = ' + (v * m).to_s
-(v * m)
+puts 'v * m = ' + (v * m).to_s
 
 m1 = MyMatrix.new([[1,2,3], [2,3,4]])
-#puts 'm1 = ' + m1.to_s + '\n'
-#puts 'm * m1 = ' + (m * m1).to_s
-#puts 'm1 * m = ' + (m1 * m).to_s
+puts 'm1 = ' + m1.to_s + "\n"
+puts 'm * m1 = ' + (m * m1).to_s
+puts 'm1 * m = ' + (m1 * m).to_s
