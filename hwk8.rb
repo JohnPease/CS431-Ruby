@@ -37,7 +37,6 @@ class BinaryNode
 
   # returns the string in the whole tree that comes first alphabetically
   def firstAlphabetical
-    #puts @left.to_s + ', ' + @right.to_s
     if @left.firstAlphabetical.casecmp(@right.firstAlphabetical) == -1
       @left.firstAlphabetical
     else
