@@ -8,7 +8,7 @@ class Leaf
 
   # return the string in the leaf
   def concatAll
-    @leaf
+    @leaf.to_s
   end
 
   # return the string in the leaf
@@ -37,20 +37,24 @@ class BinaryNode
 
   # returns the string in the whole tree that comes first alphabetically
   def firstAlphabetical
-    if (@left.firstAlphabetical.casecmp(@right.firstAlphabetical) == -1)
-      @left
+    #puts @left.to_s + ', ' + @right.to_s
+    if @left.firstAlphabetical.casecmp(@right.firstAlphabetical) == -1
+      @left.firstAlphabetical
     else
-      @right
+      @right.firstAlphabetical
     end
   end
 
   # takes a closure parameter and calls the closure with each string in the tree as an argument
-  def iterate(cl)
-
+  def iterate(itr)
+    @left.iterate(itr)
+    @right.iterate(itr)
   end
 
 end
 
+
+# testing code
 def test_tree
   l0 = Leaf.new "What "
   l1 = Leaf.new "a "
