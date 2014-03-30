@@ -2,29 +2,29 @@
 class MyVector
 
   def initialize(array)
-    @array=array
+    @childArray=array
   end
 
   def length
-    @array.length
+    @childArray.length
   end
 
   def *(a)
     if a.instance_of?(MyVector)
 
-      if @array.length != a.length
+      if @childArray.length != a.length
         raise ArgumentError, 'Vector is incorrect size'
       end
 
       r = 0
-      for i in 0..@array.length-1 do
-        r += @array[i] * a.get_index(i)
+      for i in 0..@childArray.length-1 do
+        r += @childArray[i] * a.get_index(i)
       end
       r
 
     elsif a.instance_of?(MyMatrix)
 
-      if a.length != @array.length
+      if a.length != @childArray.length
         raise ArgumentError, 'Matrix has incorrect number of rows'
       end
 
@@ -38,8 +38,8 @@ class MyVector
 
       r = Array.new(len, 0)
       for i in 0..len-1 do
-        for j in 0..@array.length-1 do
-          r[i] += @array[j] * a.get_matrix[j].get_index(i)
+        for j in 0..@childArray.length-1 do
+          r[i] += @childArray[j] * a.get_matrix[j].get_index(i)
         end
       end
 
@@ -51,18 +51,18 @@ class MyVector
 
   def to_s
     x = ''
-    @array.each do |e|
+    @childArray.each do |e|
       x = x.concat(e.to_s).concat(' ')
     end
     x
   end
 
   def get_index(i)
-    @array[i]
+    @childArray[i]
   end
 
   def get_vector
-    @array
+    @childArray
   end
 
 end

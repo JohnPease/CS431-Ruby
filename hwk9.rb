@@ -100,16 +100,20 @@ end
 
 module TreeEnum
 	def any? f
-		# assume "f" is a lambda (not a block)
-		# use the "iterate" method of "self" to find out whether when "f" is applied to any element in "self", it returns true.
-		# Note that since "TreeEnum" is mixed into tree node classes, it assumes that "iterate" method takes a lambda as argument
-    if self.iterate(f) then true else false end
+    res = false
+    self.iterate(lambda { |d|
+      if f.call(d) then
+        res = true
+      end
+    })
+    res
 	end
 
 	def inject (f, c)
-		# assume "f" is a lambda and "c" is the initial value
-		# use the "iterate" method of "self" to accumulatively apply "f" to each element in "self" with "c" as the initial value
-    self.iterate(lambda { |d| f.call(c,d) })
+    self.iterate(lambda { |d|
+       c = f.call(c,d)
+    })
+    c
 	end
 end
 
